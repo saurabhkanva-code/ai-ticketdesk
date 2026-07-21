@@ -78,18 +78,4 @@ interface TicketInterface extends ContentEntityInterface, EntityOwnerInterface {
    */
   public function setAssigneeId(?int $uid): static;
 
-  /**
-   * Gets all allowed status values.
-   *
-   * @return array<string, string>
-   */
-  public static function getStatusOptions(): array;
-
-  /**
-   * Gets all allowed priority values.
-   *
-   * @return array<string, string>
-   */
-  public static function getPriorityOptions(): array;
-
 }

@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\ticketdesk\Entity\Ticket;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -61,8 +62,8 @@ class TicketListBuilder extends EntityListBuilder {
     $owner = $entity->getOwner();
 
     $row['title'] = $entity->toLink($entity->getTitle());
-    $row['priority'] = TicketInterface::getPriorityOptions()[$entity->getPriority()] ?? $entity->getPriority();
-    $row['status'] = TicketInterface::getStatusOptions()[$entity->getStatus()] ?? $entity->getStatus();
+    $row['priority'] = Ticket::getPriorityOptions()[$entity->getPriority()] ?? $entity->getPriority();
+    $row['status'] = Ticket::getStatusOptions()[$entity->getStatus()] ?? $entity->getStatus();
     $row['assignee'] = $assignee ? $assignee->getDisplayName() : $this->t('Unassigned');
     $row['owner'] = $owner ? $owner->getDisplayName() : $this->t('Unknown');
     $row['changed'] = $this->dateFormatter->format($entity->getChangedTime());

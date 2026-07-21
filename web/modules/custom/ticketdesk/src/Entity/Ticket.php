@@ -54,6 +54,7 @@ use Drupal\views\EntityViewsData;
     'collection' => '/admin/content/tickets',
   ],
   admin_permission: 'administer tickets',
+  collection_permission: 'view any ticket',
   base_table: 'ticket',
   label_count: [
     'singular' => '@count ticket',
@@ -196,7 +197,9 @@ class Ticket extends ContentEntityBase implements TicketInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * Gets all allowed status values.
+   *
+   * @return array<string, string>
    */
   public static function getStatusOptions(): array {
     return [
@@ -208,7 +211,9 @@ class Ticket extends ContentEntityBase implements TicketInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * Gets all allowed priority values.
+   *
+   * @return array<string, string>
    */
   public static function getPriorityOptions(): array {
     return [
