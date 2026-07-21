@@ -1,0 +1,6 @@
+entity.ticket.collection:
+  title: Tickets
+  route_name: entity.ticket.collection
+  description: 'Manage support tickets.'
+  parent: system.admin_content
+  weight: 10

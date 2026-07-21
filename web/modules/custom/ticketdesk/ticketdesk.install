@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Ticket Desk module.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_install().
+ */
+function ticketdesk_install(): void {
+  // Roles and permissions are installed from config/install.
+  \Drupal::messenger()->addStatus(t('Ticket Desk has been installed. Assign users to the ticketdesk_requester, ticketdesk_agent, or ticketdesk_admin roles.'));
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function ticketdesk_requirements(string $phase): array {
+  $requirements = [];
+
+  if ($phase === 'runtime') {
+    $requirements['ticketdesk'] = [
+      'title' => t('Ticket Desk'),
+      'value' => t('Enabled'),
+      'severity' => REQUIREMENT_OK,
+    ];
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function ticketdesk_uninstall(): void {
+  // Role configuration is removed automatically via config dependencies.
+}

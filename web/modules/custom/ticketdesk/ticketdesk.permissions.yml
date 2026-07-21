@@ -1,0 +1,24 @@
+administer tickets:
+  title: 'Administer tickets'
+  restrict access: true
+
+create ticket:
+  title: 'Create tickets'
+
+view own ticket:
+  title: 'View own tickets'
+
+view any ticket:
+  title: 'View any ticket'
+
+edit any ticket:
+  title: 'Edit any ticket'
+
+transition ticket:
+  title: 'Transition ticket status'
+
+assign ticket:
+  title: 'Assign tickets'
+
+access ticketdesk dashboard:
+  title: 'Access ticket desk dashboard'

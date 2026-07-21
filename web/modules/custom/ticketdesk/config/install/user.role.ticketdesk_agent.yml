@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - ticketdesk
+id: ticketdesk_agent
+label: 'Ticket agent'
+weight: 5
+is_admin: false
+permissions:
+  - 'create ticket'
+  - 'view own ticket'
+  - 'view any ticket'
+  - 'edit any ticket'
+  - 'transition ticket'
+  - 'assign ticket'
+  - 'access ticketdesk dashboard'

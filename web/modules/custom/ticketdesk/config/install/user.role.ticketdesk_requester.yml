@@ -1,0 +1,12 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - ticketdesk
+id: ticketdesk_requester
+label: 'Ticket requester'
+weight: 4
+is_admin: false
+permissions:
+  - 'create ticket'
+  - 'view own ticket'

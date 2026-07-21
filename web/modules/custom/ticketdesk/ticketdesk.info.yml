@@ -1,0 +1,9 @@
+name: Ticket Desk
+type: module
+description: 'Support ticket management with lifecycle, access control, and dashboard.'
+package: Custom
+core_version_requirement: ^11
+dependencies:
+  - drupal:user
+  - drupal:filter
+  - drupal:text
