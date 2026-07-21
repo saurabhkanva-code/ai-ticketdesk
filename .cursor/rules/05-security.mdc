@@ -1,0 +1,25 @@
+Security
+
+Always:
+
+Escape output.
+
+Validate input.
+
+Sanitize user input.
+
+Check permissions.
+
+Check access.
+
+Use CSRF protection.
+
+Never:
+
+Use raw SQL.
+
+Trust request parameters.
+
+Print user input directly.
+
+Disable access checks.

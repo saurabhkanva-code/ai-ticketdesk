@@ -1,0 +1,17 @@
+Testing
+
+Generate:
+
+Kernel Tests
+
+Functional Tests
+
+Unit Tests
+
+Use PHPUnit.
+
+Mock services.
+
+Never test private methods.
+
+Prefer testing public behavior.

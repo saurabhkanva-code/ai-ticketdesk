@@ -1,1 +1,29 @@
+# Drupal core, contrib, and generated files — reinstalled via composer install
+/web/core
+/web/modules/contrib
+/web/themes/contrib
+/web/profiles/contrib
+/vendor
 
+# Local settings and environment
+/web/sites/*/settings.local.php
+/web/sites/*/settings.ddev.php
+!/web/sites/default/default.settings.php
+.env
+.env.*
+!.env.example
+
+# Generated/uploaded files, not part of source
+/web/sites/*/files
+/web/sites/simpletest
+
+# DDEV local-only artifacts (config.yaml itself stays tracked)
+.ddev/db_snapshots
+.ddev/.global_commands
+.ddev/.dbimageBuild
+.ddev/.dcimageBuild
+
+# Composer cache, editor/OS noise
+.phpunit.result.cache
+.DS_Store
+*.log

@@ -1,0 +1,33 @@
+Drupal Version: 11
+
+Always prefer:
+
+- Services
+- Plugins
+- Event Subscribers
+- Dependency Injection
+- Config API
+- State API
+- Entity API
+- Cache API
+- Queue API
+- Batch API
+- Typed Data API
+
+Avoid:
+
+- Deprecated APIs
+- Procedural code
+- Direct SQL
+- Global variables
+- Static service container calls
+
+Only use:
+
+\Drupal::service()
+
+when dependency injection is impossible.
+
+Never suggest Drupal 7 or Drupal 8 code.
+
+Generate modern Drupal 11 code only.

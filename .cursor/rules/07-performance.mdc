@@ -1,0 +1,27 @@
+Performance
+
+Always:
+
+Use cache tags.
+
+Use cache contexts.
+
+Use cache max-age.
+
+Prefer entity loading over queries.
+
+Use lazy builders.
+
+Batch expensive operations.
+
+Queue long-running work.
+
+Never:
+
+Load all entities.
+
+Disable caching.
+
+Perform work inside Twig.
+
+Perform work inside preprocess unless necessary.

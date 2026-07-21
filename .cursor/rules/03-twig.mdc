@@ -1,0 +1,15 @@
+Twig Rules
+
+Use:
+
+- attach_library()
+- render arrays
+- Drupal attributes
+
+Avoid:
+
+- business logic
+- database queries
+- PHP inside Twig
+
+Templates should remain presentation only.

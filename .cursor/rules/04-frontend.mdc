@@ -1,0 +1,18 @@
+Frontend
+
+Use:
+
+- Drupal Libraries API
+- ES6 JavaScript
+- Drupal Behaviors
+- once()
+
+Avoid:
+
+- jQuery unless required
+- inline JS
+- inline CSS
+
+CSS:
+
+Prefer BEM naming.
