@@ -1,3 +1,11 @@
+ticketdesk.dashboard:
+  path: '/ticketdesk/dashboard'
+  defaults:
+    _controller: '\Drupal\ticketdesk\Controller\TicketDashboardController::view'
+    _title: 'Ticket dashboard'
+  requirements:
+    _permission: 'access ticketdesk dashboard'
+
 ticketdesk.api.ticket_list:
   path: '/api/ticketdesk/tickets'
   defaults:

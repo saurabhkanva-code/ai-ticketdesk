@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Hook\Attribute\Hook;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\ticketdesk\Service\TicketDashboardService;
@@ -24,6 +25,7 @@ class TicketdeskHooks {
     protected readonly TicketTransitionService $transitionService,
     protected readonly CacheTagsInvalidatorInterface $cacheTagsInvalidator,
     protected readonly AccountProxyInterface $currentUser,
+    protected readonly RouteMatchInterface $routeMatch,
   ) {}
 
   /**
@@ -92,6 +94,16 @@ class TicketdeskHooks {
   #[Hook('entity_delete')]
   public function entityDelete(EntityInterface $entity): void {
     $this->invalidateDashboardCache($entity);
+  }
+
+  /**
+   * Implements hook_page_attachments().
+   */
+  #[Hook('page_attachments')]
+  public function pageAttachments(array &$attachments): void {
+    if ($this->routeMatch->getRouteName() === 'ticketdesk.dashboard') {
+      $attachments['#attached']['library'][] = 'ticketdesk/dashboard';
+    }
   }
 
   /**

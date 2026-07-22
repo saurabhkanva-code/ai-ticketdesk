@@ -1,3 +1,10 @@
+ticketdesk.dashboard:
+  title: 'Ticket dashboard'
+  route_name: ticketdesk.dashboard
+  description: 'View ticket counts by status and priority.'
+  parent: system.admin_content
+  weight: 5
+
 entity.ticket.collection:
   title: Tickets
   route_name: entity.ticket.collection

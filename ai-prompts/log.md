@@ -53,3 +53,36 @@ Implement phase 3
 
 
 Implement phase 4 also explain why JSON API routes/controllers are used
+
+
+Implement phase 5, create dashboard controller, twig templates and menu links
+
+Convert the ticket dashboard from its current layout into a proper data
+table
+
+Requirements:
+- Render as a table with columns: Ticket
+  ID, Title, Status, Priority, Assignee, Created, Last Updated.
+- Color-code the Status column as a pill/badge, not just text color:
+  - open -> red
+  - in_progress -> yellow/amber
+  - resolved -> blue
+  - closed -> green
+- Color-code the Priority column similarly:
+  - critical -> red
+  - high -> orange
+  - medium -> yellow
+  - low -> green
+- Implement colors via CSS classes in a library (ticketdesk.dashboard.css
+  attached through *.libraries.yml), not inline styles.
+- Alongside color, include the status/priority text label in the badge unchanged.
+- Table should remain sortable/filterable if that's already supported by
+
+Show me the diff before applying so I can review 
+structure and CSS approach.
+
+
+Update the ticket dashboard query so it only shows tickets where the
+current logged-in user is either the requester or the assignee
+
+Also the table doesnt have borders, all borders and colors to table data as per above request, make dashboard clean use m/D/Y format for date as it is looking cluttered, reduce the font of title 'Ticket dashboard' by 25%

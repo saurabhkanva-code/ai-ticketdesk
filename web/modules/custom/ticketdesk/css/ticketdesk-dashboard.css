@@ -1,0 +1,108 @@
+/**
+ * @file
+ * Dashboard table and badge styles for Ticket Desk.
+ */
+
+.path-ticketdesk-dashboard .page-title,
+.path-ticketdesk-dashboard h1.title,
+.ticketdesk-dashboard-wrapper .page-title {
+  font-size: 75%;
+}
+
+.ticketdesk-dashboard {
+  margin-block: 1rem;
+}
+
+.ticketdesk-dashboard .ticketdesk-dashboard__table {
+  background: #fff;
+  border: 1px solid #d3d4d9;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  margin-block: 1rem;
+  width: 100%;
+}
+
+.ticketdesk-dashboard .ticketdesk-dashboard__table thead th {
+  background: #f3f4f6;
+  border: 1px solid #d3d4d9;
+  color: #1b1b1d;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.ticketdesk-dashboard .ticketdesk-dashboard__table tbody td {
+  border: 1px solid #d3d4d9;
+  color: #1b1b1d;
+  padding: 0.625rem 0.75rem;
+  vertical-align: middle;
+}
+
+.ticketdesk-dashboard .ticketdesk-dashboard__table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.ticketdesk-dashboard .ticketdesk-dashboard__table tbody tr:hover {
+  background: #f5f7fa;
+}
+
+.ticketdesk-dashboard .ticketdesk-dashboard__table .ticketdesk-dashboard__date {
+  color: #4b5563;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.ticketdesk-badge {
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+  padding: 0.2rem 0.625rem;
+  white-space: nowrap;
+}
+
+/* Status pills. */
+.ticketdesk-badge--status-open {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ticketdesk-badge--status-in-progress {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.ticketdesk-badge--status-resolved {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.ticketdesk-badge--status-closed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* Priority pills. */
+.ticketdesk-badge--priority-critical {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ticketdesk-badge--priority-high {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.ticketdesk-badge--priority-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.ticketdesk-badge--priority-low {
+  background: #d1fae5;
+  color: #065f46;
+}
