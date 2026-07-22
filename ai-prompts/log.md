@@ -86,3 +86,5 @@ Update the ticket dashboard query so it only shows tickets where the
 current logged-in user is either the requester or the assignee
 
 Also the table doesnt have borders, all borders and colors to table data as per above request, make dashboard clean use m/D/Y format for date as it is looking cluttered, reduce the font of title 'Ticket dashboard' by 25%
+
+In /ticketdesk/ticket/{id} display page, only title is displayed, show description, status, priority & assignee also, display it in structured manner
