@@ -32,7 +32,8 @@ class TicketAccessControlHandler extends EntityAccessControlHandler {
     return match ($operation) {
       'view' => $this->checkViewAccess($entity, $account),
       'update' => $this->checkUpdateAccess($entity, $account),
-      'delete' => AccessResult::allowedIfHasPermission($account, 'administer tickets'),
+      'delete' => AccessResult::forbidden('Only ticket administrators can delete tickets.')
+        ->cachePerPermissions(),
       default => AccessResult::neutral(),
     };
   }
@@ -73,7 +74,21 @@ class TicketAccessControlHandler extends EntityAccessControlHandler {
     }
 
     $is_owner = (int) $ticket->getOwnerId() === (int) $account->id();
-    return AccessResult::allowedIf($is_owner && $account->hasPermission('create ticket'))
+    if (!$is_owner || !$account->hasPermission('create ticket')) {
+      return AccessResult::forbidden('You can only edit your own tickets.')
+        ->cachePerPermissions()
+        ->cachePerUser()
+        ->addCacheableDependency($ticket);
+    }
+
+    if ($ticket->getStatus() === TicketInterface::STATUS_CLOSED) {
+      return AccessResult::forbidden('Closed tickets cannot be edited by requesters.')
+        ->cachePerPermissions()
+        ->cachePerUser()
+        ->addCacheableDependency($ticket);
+    }
+
+    return AccessResult::allowed()
       ->cachePerPermissions()
       ->cachePerUser()
       ->addCacheableDependency($ticket);

@@ -6,16 +6,17 @@ namespace Drupal\ticketdesk\Entity;
 
 use Drupal\Core\Entity\Attribute\ContentEntityType;
 use Drupal\Core\Entity\ContentEntityBase;
-use Drupal\Core\Entity\ContentEntityDeleteForm;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\ticketdesk\Form\TicketDeleteForm;
 use Drupal\ticketdesk\Form\TicketForm;
 use Drupal\ticketdesk\TicketAccessControlHandler;
 use Drupal\ticketdesk\TicketHtmlRouteProvider;
 use Drupal\ticketdesk\TicketInterface;
 use Drupal\ticketdesk\TicketListBuilder;
+use Drupal\ticketdesk\TicketViewBuilder;
 use Drupal\user\EntityOwnerTrait;
 use Drupal\views\EntityViewsData;
 
@@ -37,12 +38,13 @@ use Drupal\views\EntityViewsData;
   handlers: [
     'access' => TicketAccessControlHandler::class,
     'list_builder' => TicketListBuilder::class,
+    'view_builder' => TicketViewBuilder::class,
     'views_data' => EntityViewsData::class,
     'form' => [
       'default' => TicketForm::class,
       'add' => TicketForm::class,
       'edit' => TicketForm::class,
-      'delete' => ContentEntityDeleteForm::class,
+      'delete' => TicketDeleteForm::class,
     ],
     'route_provider' => ['html' => TicketHtmlRouteProvider::class],
   ],
@@ -167,7 +169,7 @@ class Ticket extends ContentEntityBase implements TicketInterface {
       ])
       ->setDisplayOptions('view', [
         'label' => 'inline',
-        'type' => 'entity_reference_label',
+        'type' => 'ticketdesk_assignee',
         'weight' => 4,
       ])
       ->setDisplayConfigurable('form', TRUE)

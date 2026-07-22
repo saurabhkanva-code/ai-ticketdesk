@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a ticket.
+ *
+ * Available variables:
+ * - ticket: The ticket entity.
+ * - content: A list of field content items.
+ * - attributes: HTML attributes for the containing element.
+ * - view_mode: View mode; for example, "full".
+ */
+#}
+{%
+  set classes = [
+    'ticket',
+    'ticket--' ~ view_mode|clean_class,
+  ]
+%}
+<article{{ attributes.addClass(classes) }}>
+  {{ title_prefix }}
+  {% if label %}
+    <h2{{ title_attributes.addClass('ticket__title') }}>{{ label }}</h2>
+  {% endif %}
+  {{ title_suffix }}
+
+  <div{{ content_attributes.addClass('ticket__content') }}>
+    {{ content }}
+  </div>
+</article>

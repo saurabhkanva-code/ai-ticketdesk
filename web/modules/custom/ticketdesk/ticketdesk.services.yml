@@ -2,3 +2,9 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
+
+  Drupal\ticketdesk\Service\TicketTransitionService: ~
+
+  Drupal\ticketdesk\Service\TicketDashboardService: ~
+
+  Drupal\ticketdesk\Hook\TicketdeskHooks: ~

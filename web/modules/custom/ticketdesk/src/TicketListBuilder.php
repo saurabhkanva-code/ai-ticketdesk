@@ -9,6 +9,8 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\ticketdesk\Entity\Ticket;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -24,6 +26,7 @@ class TicketListBuilder extends EntityListBuilder {
     EntityTypeInterface $entity_type,
     EntityStorageInterface $storage,
     protected readonly DateFormatterInterface $dateFormatter,
+    protected readonly AccountProxyInterface $currentUser,
   ) {
     parent::__construct($entity_type, $storage);
   }
@@ -36,6 +39,7 @@ class TicketListBuilder extends EntityListBuilder {
       $entity_type,
       $container->get('entity_type.manager')->getStorage($entity_type->id()),
       $container->get('date.formatter'),
+      $container->get('current_user'),
     );
   }
 
@@ -69,6 +73,20 @@ class TicketListBuilder extends EntityListBuilder {
     $row['changed'] = $this->dateFormatter->format($entity->getChangedTime());
 
     return $row + parent::buildRow($entity);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getEntityListQuery(): QueryInterface {
+    $query = parent::getEntityListQuery();
+
+    if (!$this->currentUser->hasPermission('administer tickets')
+      && !$this->currentUser->hasPermission('view any ticket')) {
+      $query->condition('uid', $this->currentUser->id());
+    }
+
+    return $query;
   }
 
 }
