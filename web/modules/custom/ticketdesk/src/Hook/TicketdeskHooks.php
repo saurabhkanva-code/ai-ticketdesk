@@ -12,6 +12,7 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Template\Attribute;
+use Drupal\ticketdesk\Entity\Ticket;
 use Drupal\ticketdesk\Service\TicketDashboardService;
 use Drupal\ticketdesk\Service\TicketTransitionService;
 use Drupal\ticketdesk\TicketInterface;
@@ -101,8 +102,12 @@ class TicketdeskHooks {
    */
   #[Hook('page_attachments')]
   public function pageAttachments(array &$attachments): void {
-    if ($this->routeMatch->getRouteName() === 'ticketdesk.dashboard') {
+    $route_name = $this->routeMatch->getRouteName();
+    if ($route_name === 'ticketdesk.dashboard') {
       $attachments['#attached']['library'][] = 'ticketdesk/dashboard';
+    }
+    elseif ($route_name === 'entity.ticket.canonical') {
+      $attachments['#attached']['library'][] = 'ticketdesk/ticket';
     }
   }
 
@@ -119,21 +124,60 @@ class TicketdeskHooks {
   }
 
   /**
-   * Implements hook_template_preprocess_ticket().
+   * Implements hook_preprocess_ticket().
    */
-  #[Hook('template_preprocess_ticket')]
+  #[Hook('preprocess_ticket')]
   public function preprocessTicket(array &$variables): void {
-    $variables['ticket'] = $variables['elements']['#ticket'];
+    /** @var \Drupal\ticketdesk\TicketInterface $ticket */
+    $ticket = $variables['elements']['#ticket'];
+    $variables['ticket'] = $ticket;
     $variables['view_mode'] = $variables['elements']['#view_mode'];
     $variables['attributes'] = $variables['elements']['#attributes'] ?? [];
     $variables['title_attributes'] = new Attribute();
     $variables['content_attributes'] = new Attribute();
-    $variables['label'] = $variables['ticket']->label();
+    $variables['title_prefix'] = $variables['elements']['#title_prefix'] ?? [];
+    $variables['title_suffix'] = $variables['elements']['#title_suffix'] ?? [];
+    $variables['label'] = $ticket->label();
 
     $variables['content'] = [];
     foreach (Element::children($variables['elements']) as $key) {
       $variables['content'][$key] = $variables['elements'][$key];
     }
+
+    $status = $ticket->getStatus();
+    $priority = $ticket->getPriority();
+    $variables['status_badge'] = $this->buildBadge(
+      'status',
+      $status,
+      Ticket::getStatusOptions()[$status] ?? $status,
+    );
+    $variables['priority_badge'] = $this->buildBadge(
+      'priority',
+      $priority,
+      Ticket::getPriorityOptions()[$priority] ?? $priority,
+    );
+
+    $assignee = $ticket->get('assignee')->entity;
+    $variables['assignee_label'] = $assignee
+      ? $assignee->getDisplayName()
+      : (string) t('Unassigned');
+  }
+
+  /**
+   * Builds a status or priority badge render element.
+   *
+   * @return array<string, mixed>
+   */
+  private function buildBadge(string $type, string $key, string $label): array {
+    return [
+      '#type' => 'inline_template',
+      '#template' => '<span class="ticketdesk-badge ticketdesk-badge--{{ type }}-{{ key|clean_class }}">{{ label }}</span>',
+      '#context' => [
+        'type' => $type,
+        'key' => $key,
+        'label' => $label,
+      ],
+    ];
   }
 
   /**

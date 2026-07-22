@@ -1,5 +1,21 @@
+badges:
+  version: VERSION
+  css:
+    theme:
+      css/ticketdesk-badges.css: {}
+
 dashboard:
   version: VERSION
   css:
     theme:
       css/ticketdesk-dashboard.css: {}
+  dependencies:
+    - ticketdesk/badges
+
+ticket:
+  version: VERSION
+  css:
+    theme:
+      css/ticketdesk-ticket.css: {}
+  dependencies:
+    - ticketdesk/badges

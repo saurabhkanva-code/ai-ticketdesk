@@ -8,6 +8,10 @@
  * - content: A list of field content items.
  * - attributes: HTML attributes for the containing element.
  * - view_mode: View mode; for example, "full".
+ * - label: The ticket title.
+ * - status_badge: Render array for the status badge.
+ * - priority_badge: Render array for the priority badge.
+ * - assignee_label: The assignee display name or "Unassigned".
  */
 #}
 {%
@@ -18,12 +22,39 @@
 %}
 <article{{ attributes.addClass(classes) }}>
   {{ title_prefix }}
-  {% if label %}
-    <h2{{ title_attributes.addClass('ticket__title') }}>{{ label }}</h2>
-  {% endif %}
+  <header class="ticket__header">
+    {% if label %}
+      <h2{{ title_attributes.addClass('ticket__title') }}>{{ label }}</h2>
+    {% endif %}
+
+    <dl class="ticket__meta">
+      <div class="ticket__meta-item">
+        <dt class="ticket__meta-label">{{ 'Status'|t }}</dt>
+        <dd class="ticket__meta-value">{{ status_badge }}</dd>
+      </div>
+      <div class="ticket__meta-item">
+        <dt class="ticket__meta-label">{{ 'Priority'|t }}</dt>
+        <dd class="ticket__meta-value">{{ priority_badge }}</dd>
+      </div>
+      <div class="ticket__meta-item">
+        <dt class="ticket__meta-label">{{ 'Assignee'|t }}</dt>
+        <dd class="ticket__meta-value">{{ assignee_label }}</dd>
+      </div>
+    </dl>
+  </header>
   {{ title_suffix }}
 
-  <div{{ content_attributes.addClass('ticket__content') }}>
-    {{ content }}
-  </div>
+  {% if content.description %}
+    <section class="ticket__section ticket__description">
+      <h3 class="ticket__section-title">{{ 'Description'|t }}</h3>
+      {{ content.description }}
+    </section>
+  {% endif %}
+
+  {% if content.created or content.changed %}
+    <footer class="ticket__dates">
+      {{ content.created }}
+      {{ content.changed }}
+    </footer>
+  {% endif %}
 </article>
