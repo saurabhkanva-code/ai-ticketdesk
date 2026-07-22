@@ -1,0 +1,43 @@
+ticketdesk.api.ticket_list:
+  path: '/api/ticketdesk/tickets'
+  defaults:
+    _controller: '\Drupal\ticketdesk\Controller\TicketApiController::list'
+  methods: [GET]
+  requirements:
+    _user_is_logged_in: 'TRUE'
+
+ticketdesk.api.ticket_create:
+  path: '/api/ticketdesk/tickets'
+  defaults:
+    _controller: '\Drupal\ticketdesk\Controller\TicketApiController::createTicket'
+  methods: [POST]
+  requirements:
+    _user_is_logged_in: 'TRUE'
+    _csrf_request_header_token: 'TRUE'
+
+ticketdesk.api.ticket_get:
+  path: '/api/ticketdesk/tickets/{ticket}'
+  defaults:
+    _controller: '\Drupal\ticketdesk\Controller\TicketApiController::get'
+  methods: [GET]
+  requirements:
+    _user_is_logged_in: 'TRUE'
+    ticket: \d+
+  options:
+    parameters:
+      ticket:
+        type: entity:ticket
+
+ticketdesk.api.ticket_patch:
+  path: '/api/ticketdesk/tickets/{ticket}'
+  defaults:
+    _controller: '\Drupal\ticketdesk\Controller\TicketApiController::patch'
+  methods: [PATCH]
+  requirements:
+    _user_is_logged_in: 'TRUE'
+    _csrf_request_header_token: 'TRUE'
+    ticket: \d+
+  options:
+    parameters:
+      ticket:
+        type: entity:ticket
