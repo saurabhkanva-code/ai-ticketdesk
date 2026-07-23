@@ -88,3 +88,18 @@ current logged-in user is either the requester or the assignee
 Also the table doesnt have borders, all borders and colors to table data as per above request, make dashboard clean use m/D/Y format for date as it is looking cluttered, reduce the font of title 'Ticket dashboard' by 25%
 
 In /ticketdesk/ticket/{id} display page, only title is displayed, show description, status, priority & assignee also, display it in structured manner
+
+
+@docs/plan.md 
+Implement phase 6, write test cases
+
+Implement phase 7
+aslo few modifications are needed like make dahsboard as homepage or  / landing page. Also add edit Ticket link in dashboard as coulmn name 'Take Action'. Remove home link from Frontend
+
+Add a create ticket link in the Dashboard from which user can create tickets
+
+Admin dashboard should display all the tickets created in system also add exposed fileters like assignee, requester, ticket status and ticket progress.
+
+The filters are vertically placed make it horizontal in one line, shift create ticket button above, make the submission-result ajax request, clean up the ui
+
+The filters arent getting applied properly, on selection of filter and applying it, it isnt changing results

@@ -7,6 +7,10 @@ services:
 
   Drupal\ticketdesk\Service\TicketDashboardService: ~
 
+  Drupal\ticketdesk\Service\TicketAccessService: ~
+
+  Drupal\ticketdesk\Service\TicketDashboardResultsBuilder: ~
+
   Drupal\ticketdesk\Service\TicketApiNormalizer: ~
 
   Drupal\ticketdesk\Service\TicketApiValidator: ~

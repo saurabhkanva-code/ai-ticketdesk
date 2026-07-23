@@ -10,8 +10,6 @@ is_admin: false
 permissions:
   - 'create ticket'
   - 'view own ticket'
-  - 'view any ticket'
-  - 'edit any ticket'
   - 'transition ticket'
   - 'assign ticket'
   - 'access ticketdesk dashboard'

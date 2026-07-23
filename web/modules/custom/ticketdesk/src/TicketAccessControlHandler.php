@@ -6,13 +6,34 @@ namespace Drupal\ticketdesk;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityAccessControlHandler;
+use Drupal\Core\Entity\EntityHandlerInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\ticketdesk\Service\TicketAccessService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines the access control handler for tickets.
  */
-class TicketAccessControlHandler extends EntityAccessControlHandler {
+class TicketAccessControlHandler extends EntityAccessControlHandler implements EntityHandlerInterface {
+
+  public function __construct(
+    EntityTypeInterface $entity_type,
+    protected readonly TicketAccessService $ticketAccess,
+  ) {
+    parent::__construct($entity_type);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type): static {
+    return new static(
+      $entity_type,
+      $container->get(TicketAccessService::class),
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -25,15 +46,10 @@ class TicketAccessControlHandler extends EntityAccessControlHandler {
         ->addCacheContexts(['user.roles:anonymous']);
     }
 
-    if ($account->hasPermission('administer tickets')) {
-      return AccessResult::allowed()->cachePerPermissions();
-    }
-
     return match ($operation) {
       'view' => $this->checkViewAccess($entity, $account),
       'update' => $this->checkUpdateAccess($entity, $account),
-      'delete' => AccessResult::forbidden('Only ticket administrators can delete tickets.')
-        ->cachePerPermissions(),
+      'delete' => $this->checkDeleteAccess($entity, $account),
       default => AccessResult::neutral(),
     };
   }
@@ -54,12 +70,7 @@ class TicketAccessControlHandler extends EntityAccessControlHandler {
    * Checks view access for a ticket.
    */
   protected function checkViewAccess(TicketInterface $ticket, AccountInterface $account): AccessResult {
-    if ($account->hasPermission('view any ticket')) {
-      return AccessResult::allowed()->cachePerPermissions();
-    }
-
-    $is_owner = (int) $ticket->getOwnerId() === (int) $account->id();
-    return AccessResult::allowedIf($is_owner && $account->hasPermission('view own ticket'))
+    return AccessResult::allowedIf($this->ticketAccess->canView($ticket, $account))
       ->cachePerPermissions()
       ->cachePerUser()
       ->addCacheableDependency($ticket);
@@ -69,20 +80,13 @@ class TicketAccessControlHandler extends EntityAccessControlHandler {
    * Checks update access for a ticket.
    */
   protected function checkUpdateAccess(TicketInterface $ticket, AccountInterface $account): AccessResult {
-    if ($account->hasPermission('edit any ticket')) {
-      return AccessResult::allowed()->cachePerPermissions();
-    }
+    if (!$this->ticketAccess->canUpdate($ticket, $account)) {
+      $message = (int) $ticket->getOwnerId() === (int) $account->id()
+        && $ticket->getStatus() === TicketInterface::STATUS_CLOSED
+        ? 'Closed tickets cannot be edited by requesters.'
+        : 'You do not have permission to edit this ticket.';
 
-    $is_owner = (int) $ticket->getOwnerId() === (int) $account->id();
-    if (!$is_owner || !$account->hasPermission('create ticket')) {
-      return AccessResult::forbidden('You can only edit your own tickets.')
-        ->cachePerPermissions()
-        ->cachePerUser()
-        ->addCacheableDependency($ticket);
-    }
-
-    if ($ticket->getStatus() === TicketInterface::STATUS_CLOSED) {
-      return AccessResult::forbidden('Closed tickets cannot be edited by requesters.')
+      return AccessResult::forbidden($message)
         ->cachePerPermissions()
         ->cachePerUser()
         ->addCacheableDependency($ticket);
@@ -91,6 +95,15 @@ class TicketAccessControlHandler extends EntityAccessControlHandler {
     return AccessResult::allowed()
       ->cachePerPermissions()
       ->cachePerUser()
+      ->addCacheableDependency($ticket);
+  }
+
+  /**
+   * Checks delete access for a ticket.
+   */
+  protected function checkDeleteAccess(TicketInterface $ticket, AccountInterface $account): AccessResult {
+    return AccessResult::allowedIf($this->ticketAccess->canAdminister($account))
+      ->cachePerPermissions()
       ->addCacheableDependency($ticket);
   }
 

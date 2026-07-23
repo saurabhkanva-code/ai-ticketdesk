@@ -56,7 +56,7 @@ use Drupal\views\EntityViewsData;
     'collection' => '/admin/content/tickets',
   ],
   admin_permission: 'administer tickets',
-  collection_permission: 'view any ticket',
+  collection_permission: 'administer tickets',
   base_table: 'ticket',
   label_count: [
     'singular' => '@count ticket',

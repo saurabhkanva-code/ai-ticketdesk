@@ -10,6 +10,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\ticketdesk\Service\TicketApiNormalizer;
 use Drupal\ticketdesk\Service\TicketApiValidator;
+use Drupal\ticketdesk\Service\TicketAccessService;
 use Drupal\ticketdesk\Service\TicketTransitionService;
 use Drupal\ticketdesk\TicketInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -37,6 +38,7 @@ class TicketApiController extends ControllerBase {
     protected readonly TicketApiValidator $validator,
     protected readonly TicketTransitionService $transitionService,
     protected readonly AccountProxyInterface $currentUserProxy,
+    protected readonly TicketAccessService $ticketAccess,
   ) {
     $this->ticketStorage = $entity_type_manager->getStorage('ticket');
   }
@@ -51,6 +53,7 @@ class TicketApiController extends ControllerBase {
       $container->get(TicketApiValidator::class),
       $container->get(TicketTransitionService::class),
       $container->get('current_user'),
+      $container->get(TicketAccessService::class),
     );
   }
 
@@ -69,9 +72,8 @@ class TicketApiController extends ControllerBase {
       ->sort('changed', 'DESC')
       ->range(0, self::LIST_LIMIT);
 
-    if (!$account->hasPermission('administer tickets')
-      && !$account->hasPermission('view any ticket')) {
-      $query->condition('uid', $account->id());
+    if (!$this->ticketAccess->canViewAll($account->getAccount())) {
+      $this->ticketAccess->applyInvolvementConditions($query, $account->getAccount());
     }
 
     $ids = $query->execute();
@@ -157,8 +159,7 @@ class TicketApiController extends ControllerBase {
     }
 
     $original_status = $unchanged->getStatus();
-    $can_manage = $this->currentUserProxy->hasPermission('administer tickets')
-      || $this->currentUserProxy->hasPermission('edit any ticket');
+    $can_manage = $this->ticketAccess->canManageTicketFields($ticket, $this->currentUserProxy->getAccount());
 
     if (array_key_exists('title', $payload)) {
       $ticket->setTitle($this->validator->stringValue($payload['title']));

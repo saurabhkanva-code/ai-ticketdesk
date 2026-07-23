@@ -6,6 +6,7 @@ namespace Drupal\ticketdesk\Service;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\ticketdesk\Service\TicketAccessService;
 use Drupal\ticketdesk\Entity\Ticket;
 use Drupal\ticketdesk\TicketInterface;
 
@@ -13,6 +14,10 @@ use Drupal\ticketdesk\TicketInterface;
  * Validates ticket API request payloads.
  */
 class TicketApiValidator {
+
+  public function __construct(
+    protected readonly TicketAccessService $ticketAccess,
+  ) {}
 
   /**
    * Validates a create-ticket payload.
@@ -81,8 +86,7 @@ class TicketApiValidator {
       }
     }
 
-    $can_manage = $account->hasPermission('administer tickets')
-      || $account->hasPermission('edit any ticket');
+    $can_manage = $this->ticketAccess->canManageTicketFields($ticket, $account);
 
     if (array_key_exists('priority', $payload)) {
       if (!$can_manage) {

@@ -7,3 +7,4 @@ dependencies:
   - drupal:user
   - drupal:filter
   - drupal:text
+  - drupal:options

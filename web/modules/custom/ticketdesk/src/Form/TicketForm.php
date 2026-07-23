@@ -11,6 +11,7 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\ticketdesk\Entity\Ticket;
+use Drupal\ticketdesk\Service\TicketAccessService;
 use Drupal\ticketdesk\Service\TicketTransitionService;
 use Drupal\ticketdesk\TicketInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,6 +27,7 @@ class TicketForm extends ContentEntityForm {
     TimeInterface $time,
     protected readonly TicketTransitionService $transitionService,
     protected readonly EntityTypeManagerInterface $ticketEntityTypeManager,
+    protected readonly TicketAccessService $ticketAccess,
   ) {
     parent::__construct($entity_repository, $entity_type_bundle_info, $time);
   }
@@ -40,6 +42,7 @@ class TicketForm extends ContentEntityForm {
       $container->get('datetime.time'),
       $container->get(TicketTransitionService::class),
       $container->get('entity_type.manager'),
+      $container->get(TicketAccessService::class),
     );
   }
 
@@ -231,8 +234,14 @@ class TicketForm extends ContentEntityForm {
    * Whether the current user can manage tickets as an agent.
    */
   protected function canManageTickets(): bool {
-    return $this->currentUser()->hasPermission('administer tickets')
-      || $this->currentUser()->hasPermission('edit any ticket');
+    $ticket = $this->entity;
+    assert($ticket instanceof TicketInterface);
+
+    if ($ticket->isNew()) {
+      return FALSE;
+    }
+
+    return $this->ticketAccess->canManageTicketFields($ticket, $this->currentUser());
   }
 
   /**

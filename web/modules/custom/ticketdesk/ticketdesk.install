@@ -7,12 +7,49 @@
 
 declare(strict_types=1);
 
+use Drupal\user\Entity\Role;
+
 /**
  * Implements hook_install().
  */
 function ticketdesk_install(): void {
-  // Roles and permissions are installed from config/install.
+  ticketdesk_apply_site_configuration();
+
   \Drupal::messenger()->addStatus(t('Ticket Desk has been installed. Assign users to the ticketdesk_requester, ticketdesk_agent, or ticketdesk_admin roles.'));
+}
+
+/**
+ * Sets the dashboard as the site front page and grants requester dashboard access.
+ */
+function ticketdesk_apply_site_configuration(): void {
+  \Drupal::configFactory()->getEditable('system.site')
+    ->set('page.front', '/ticketdesk/dashboard')
+    ->save(TRUE);
+
+  $requester = Role::load('ticketdesk_requester');
+  if ($requester instanceof Role && !$requester->hasPermission('access ticketdesk dashboard')) {
+    $requester->grantPermission('access ticketdesk dashboard');
+    $requester->save();
+  }
+}
+
+/**
+ * Sets the dashboard as the site front page for existing sites.
+ */
+function ticketdesk_update_9001(): void {
+  ticketdesk_apply_site_configuration();
+}
+
+/**
+ * Restricts agents to involved tickets only.
+ */
+function ticketdesk_update_9002(): void {
+  $agent = Role::load('ticketdesk_agent');
+  if ($agent instanceof Role) {
+    $agent->revokePermission('view any ticket');
+    $agent->revokePermission('edit any ticket');
+    $agent->save();
+  }
 }
 
 /**

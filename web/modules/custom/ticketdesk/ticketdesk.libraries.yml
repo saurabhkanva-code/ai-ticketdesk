@@ -9,8 +9,13 @@ dashboard:
   css:
     theme:
       css/ticketdesk-dashboard.css: {}
+  js:
+    js/ticketdesk-dashboard.js: {}
   dependencies:
     - ticketdesk/badges
+    - core/drupal
+    - core/drupal.ajax
+    - core/once
 
 ticket:
   version: VERSION

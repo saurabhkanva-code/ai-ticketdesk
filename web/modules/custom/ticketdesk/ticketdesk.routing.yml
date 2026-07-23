@@ -4,6 +4,7 @@ ticketdesk.dashboard:
     _controller: '\Drupal\ticketdesk\Controller\TicketDashboardController::view'
     _title: 'Ticket dashboard'
   requirements:
+    _user_is_logged_in: 'TRUE'
     _permission: 'access ticketdesk dashboard'
 
 ticketdesk.api.ticket_list:

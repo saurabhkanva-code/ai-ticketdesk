@@ -14,6 +14,7 @@ use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\ticketdesk\Entity\Ticket;
 use Drupal\ticketdesk\Service\TicketDashboardService;
+use Drupal\ticketdesk\Service\TicketAccessService;
 use Drupal\ticketdesk\Service\TicketTransitionService;
 use Drupal\ticketdesk\TicketInterface;
 
@@ -27,6 +28,7 @@ class TicketdeskHooks {
     protected readonly CacheTagsInvalidatorInterface $cacheTagsInvalidator,
     protected readonly AccountProxyInterface $currentUser,
     protected readonly RouteMatchInterface $routeMatch,
+    protected readonly TicketAccessService $ticketAccess,
   ) {}
 
   /**
@@ -59,8 +61,7 @@ class TicketdeskHooks {
     }
 
     if ($entity->getPriority() !== $original->getPriority()) {
-      if (!$this->currentUser->hasPermission('administer tickets')
-        && !$this->currentUser->hasPermission('edit any ticket')) {
+      if (!$this->ticketAccess->canManageTicketFields($entity, $this->currentUser->getAccount())) {
         throw new EntityStorageException('You do not have permission to change ticket priority.');
       }
     }
@@ -108,6 +109,23 @@ class TicketdeskHooks {
     }
     elseif ($route_name === 'entity.ticket.canonical') {
       $attachments['#attached']['library'][] = 'ticketdesk/ticket';
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_menu().
+   */
+  #[Hook('preprocess_menu')]
+  public function preprocessMenu(array &$variables): void {
+    if (($variables['menu_name'] ?? '') !== 'main') {
+      return;
+    }
+
+    foreach ($variables['items'] as $key => $item) {
+      $url = $item['url'] ?? NULL;
+      if ($url && $url->isRouted() && $url->getRouteName() === '<front>') {
+        unset($variables['items'][$key]);
+      }
     }
   }
 
